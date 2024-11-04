@@ -1,7 +1,6 @@
 body{
-    background-color: #f5f5f5;
-    background-image: url("https://www.transparenttextures.com/patterns/asfalt-light.png");
-    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+    background-color: #522366 !important;
+    background-image: url("https://www.transparenttextures.com/patterns/cubes.png") !important;
 }
 
 #root{
@@ -11,10 +10,12 @@ body{
 .navbar{
     padding: 0;
     color: #000;
+    background-color: transparent !important;
 }
 .navbar-nav{
     margin-right: 10px;
     margin-left: auto;
+
 }
 .navbar-brand{
     font-weight: bold;
@@ -23,10 +24,14 @@ body{
 }
 .container-fluid{
     color: black;
-    background-color: #FBBC05;
+    background-color: transparent !important;
     padding: 15px;
     border: none;
 }
 .todo-list{
     padding: 10px;
+}
+
+.nav-link{
+    color: white;
 }
