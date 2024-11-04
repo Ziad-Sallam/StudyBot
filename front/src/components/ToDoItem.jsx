@@ -1,4 +1,13 @@
-function ToDoItem(props){
+import PropTypes from "prop-types";
+
+ToDoItem.propTypes ={
+    title:PropTypes.string,
+    description:PropTypes.string,
+    date:PropTypes.string
+}
+
+
+function ToDoItem(props) {
     return (
         <tr className="list-group-item d-flex justify-content-between align-items-start">
             <th>
@@ -15,7 +24,7 @@ function ToDoItem(props){
             </th>
             <th className="table-responsive-lg">
                 <div className="ms-2 me-auto">
-                    date
+                    {props.date}
                 </div>
             </th>
 
