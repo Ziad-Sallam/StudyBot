@@ -12,13 +12,7 @@ class Subject(models.Model):
 class Assignment(models.Model): 
     subject_tag = models.ForeignKey(Subject, on_delete=models.CASCADE)  # On deleting a subject, the associated assignments will also be deleted
     
-    types = [
-        ('sheet_assignment', 'Sheet'),
-        ('lab_assignment', 'Lab'),
-        ('quiz_assignment', 'Quiz'),
-        ('custom_assignment', 'Custom'),  # Allows for a custom type entry
-    ]
-    type_tag = models.CharField(max_length=20, choices=types, default='custom')
+    type_tag = models.ForeignKey("AssignmentType",on_delete=models.CASCADE)
     custom_type = models.CharField(max_length=20, blank=True, null=True)
     
     # In case custom is chosen but not defined
@@ -29,3 +23,5 @@ class Assignment(models.Model):
     # Return human-readable name for assignment type
     def __str__(self):
         return f"{self.get_type_tag_display()} - {self.subject_tag.name}"
+class AssignmentType(models.Model):
+    type = models.CharField(max_length=20, unique=True)
