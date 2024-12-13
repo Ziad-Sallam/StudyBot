@@ -2,25 +2,31 @@
 import './main.css'
 import Navbar from "./components/Navbar.jsx";
 import ToDo from "./components/ToDo.jsx";
+import ChatBox from "./components/chatBox.jsx";
+import LogIn from "./LogIn.jsx";
 
 function App() {
 
     var todo=[
-        {title:"todo1", description:"description1", date: '15/11/2024'},
-        {title: 'todo2', description: "description2", date: '30/11/2024'}
+        {title:"Todo 1", description:"answers to a frequently asked questions", date: '15/11/2024'},
+        {title: 'Todo 2', description: "description2", date: '30/11/2024'}
 
 
     ]
 
 
-
-
   return (
     <>
-      <Navbar/>
-        <ToDo
-            todo={todo}
-        />
+      {/*<Navbar/>*/}
+      {/*  <div className={"main-page"}>*/}
+      {/*      <ToDo*/}
+      {/*          todo={todo}*/}
+      {/*      />*/}
+      {/*      <ChatBox/>*/}
+      {/*  </div>*/}
+
+        <LogIn/>
+
     </>
   )
 }
