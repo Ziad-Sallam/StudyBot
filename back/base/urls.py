@@ -1,8 +1,6 @@
-
-
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns= [
-    path('',view=views.handleRequest,name="handle")
+    path('api/token/', LoginView.as_view(), name='token_obtain_pair'),
 ]
