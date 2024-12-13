@@ -30,3 +30,7 @@ class Tasks(models.Model):
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Referencing built-in User model
     flag = models.BooleanField()
+
+class Materials(models.Model):
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE)
+    file = models.FileField(upload_to='library/')

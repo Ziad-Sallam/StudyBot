@@ -1,13 +1,12 @@
-import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import ToDoItem from './ToDoItem.jsx'
 import {useState} from "react";
 import propTypes from 'prop-type'
 
+
 ToDo.propTypes ={
     todo: propTypes.list
 }
-
 
 
 function ToDo(props){
@@ -21,10 +20,9 @@ function ToDo(props){
 
     return (
         <div className="row todo-list">
-            <div className="col-4" >
-                <ResizableBox width={size.width} maxConstraints={[window.innerWidth ]} minConstraints={[300 ]}>
-                <table className="list-group" >
-                    <tbody>
+
+                <table className="list-group">
+                    <tbody style={{borderRadius: "20px"}}>
                     {props.todo.map(item =>
                             <ToDoItem
                                 key={item.title}
@@ -32,17 +30,14 @@ function ToDo(props){
                                 description={item.description}
                                 date={item.date}
                             />
-
-
                     )}
                     </tbody>
 
                 </table>
-                </ResizableBox>
 
-            </div>
+
+
         </div>
-
 
     )
 }
