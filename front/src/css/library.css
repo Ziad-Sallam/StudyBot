@@ -1,0 +1,69 @@
+.library{
+    background-color:#ffffff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    margin-right: 40px;
+}
+
+.search-table{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    width: 96%;
+
+}
+
+.course-select{
+    border: none;
+    font-size: 20px;
+    border-bottom: 1px solid lightgray;
+}
+.course-dropdown{
+    border: none;
+}
+
+.search{
+    border: none;
+}
+.search:focus{
+    border: none;
+}
+
+.data-grid{
+    display: grid;
+    align-items: center;
+    grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr ;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.file-show{
+    align-items: center;
+    margin-bottom: 20px;
+}
+.data-file{
+    text-align: center;
+    border: none;
+    margin: 10px 10px 0;
+    border-radius: 15px;
+    padding: 50px 0 50px 0;
+    background-color: #DADCE0;
+
+}
+
+.data-file svg{
+    font-size: 60px;
+    color: gray;
+}
+.file-show p{
+    border-top: none;
+    margin-left: 10px;
+    margin-bottom: 0;
+    padding: 0 ;
+    border-radius: 15px;
+}
+.file-show .file-name{
+    font-size: 18px;
+    font-weight: bold;
+}
