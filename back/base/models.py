@@ -9,6 +9,7 @@ class Subject(models.Model):
         return self.name
     
 class Assignment(models.Model):
+    subject = models.ForeignKey(Subject,on_delete=models.CASCADE,default=1)
     type = models.ForeignKey(
         "AssignmentType",
         on_delete=models.CASCADE,
@@ -25,9 +26,14 @@ class UserAssignment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Referencing built-in User model
     assignment = models.ForeignKey("Assignment", on_delete=models.CASCADE)
     status = models.ForeignKey("AssignmentStatus", on_delete=models.CASCADE)
+    def __str__(self):
+        return f"user : {self.user.username} for assignment number : {self.assignment.id} for subject : {self.assignment.subject} status : {self.status.status}"
 
 class Tasks(models.Model):
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Referencing built-in User model
     flag = models.BooleanField()
-    
+
+class Materials(models.Model):
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE)
+    file = models.FileField(upload_to='library/')
