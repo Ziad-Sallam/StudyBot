@@ -89,7 +89,7 @@ def handle_query(user_input):
             print("Press 'c' for 'create assignment'")
         
         # Ask the user to confirm their choice
-        user_choice = input("Enter your choice (g/c): ").strip().lower()
+        user_choice = input("Enter your choice : ").strip().lower()
         
         # Execute based on the user's choice
         if user_choice == 'g' and "task" in recognized_tokens:
