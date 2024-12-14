@@ -3,11 +3,30 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min'
 import {useParams} from "react-router-dom";
+import {useState} from "react";
+import Notifications from "./Notifications.jsx";
 
 function Navbar() {
     const params = useParams();
 
+    const [notification,setNotification] = useState(false);
+    const notify = [
+        {
+        title: "xxxx",
+        description: "xxxx",
+        },
+        {
+            title: "xxxx",
+            description: "xxxx",
+        },
+        {
+            title: "xxxx",
+            description: "xxxx",
+        },
+    ]
+
     return (
+
         <nav className="navbar navbar-expand-lg navbar-light bg-transparent">
             <div className="container-fluid">
                 <a className="navbar-brand logo" href={`/${params.user}`} >Trixie</a>
@@ -25,15 +44,18 @@ function Navbar() {
                             <a className="nav-link" href={`/${params.user}/library`}>Library</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link"><NotificationsIcon color={"inhert"}/>Notification</a>
+                            <a className="nav-link" onClick={()=> setNotification(!notification)}><NotificationsIcon color={"inhert"}/>Notification</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" ><AccountCircleIcon/>{params.user}</a>
                         </li>
 
+
                     </div>
                 </div>
+
             </div>
+            {notification && (<Notifications notifications={notify} />)}
         </nav>
     )
 }
