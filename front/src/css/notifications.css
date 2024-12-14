@@ -1,0 +1,28 @@
+.notifications-box {
+    position: absolute;
+    top : 100px;
+    right : 50px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    width: 270px;
+    border-radius: 30px;
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: none;
+
+
+}
+.notifications-box .notification {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px;
+    padding: 5px 10px 5px 23px;
+    margin-bottom: 8px;
+
+}
+.notifications-box .notification hr {
+    margin: 0;
+}
+.notification p{
+    margin: 0;
+}
