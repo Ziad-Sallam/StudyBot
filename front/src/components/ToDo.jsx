@@ -13,7 +13,7 @@ function ToDo(props){
     const [size,setSize] = useState({ width: window.innerWidth *0.25, height: window.innerHeight });
     addEventListener('resize', ()=>{
         setSize((prevState) => {
-               return {width: window.innerWidth * 0.25, height: prevState.height };
+                return {width: window.innerWidth * 0.25, height: prevState.height };
             }
         );
     })
@@ -21,19 +21,19 @@ function ToDo(props){
     return (
         <div className="row todo-list">
 
-                <table className="list-group">
-                    <tbody style={{borderRadius: "20px"}}>
-                    {props.todo.map(item =>
-                            <ToDoItem
-                                key={item.title}
-                                title={item.title}
-                                description={item.description}
-                                date={item.date}
-                            />
-                    )}
-                    </tbody>
+            <table className="list-group">
+                <tbody style={{borderRadius: "20px"}}>
+                {props.todo.map(item =>
+                    <ToDoItem
+                        key={item.title}
+                        title={item.title}
+                        description={item.description}
+                        date={item.date}
+                    />
+                )}
+                </tbody>
 
-                </table>
+            </table>
 
 
 
