@@ -1,6 +1,7 @@
 import stat
 import django
 from django.http import HttpRequest, HttpResponse
+import jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
 
-from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, UserAssignment
+from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, Tasks, UserAssignment
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -67,6 +68,32 @@ def addMaterial(request : HttpRequest):
     subjectObject = Subject.objects.get(name=subject)
     material = Materials.objects.create(subject=subjectObject, file=file)
     return HttpResponse(material, status=201)
+def createTask(request : HttpRequest):
+    jwt = JWTAuthentication()
+    user = jwt.authenticate(request)
+    if user is None:
+        return HttpResponse("Authentication failed", status=401)
+    user = user[0]
+    description = request.GET.get('description')
+    task = Tasks.objects.create(description=description, user=user, flag=False)
+
+def getTasks(request : HttpRequest):
+    jwt = JWTAuthentication()
+    user = jwt.authenticate(request)
+    if user is None:
+        return HttpResponse("Authentication failed", status=401)
+    user = user[0]
+    tasks = Tasks.objects.filter(user=user)
+    return HttpResponse(tasks)
+
+def getAssignments(request : HttpRequest):
+    jwt = JWTAuthentication()
+    user = jwt.authenticate(request)
+    if user is None:
+        return HttpResponse("Authentication failed", status=401)
+    user = user[0]
+    assignments = UserAssignment.objects.filter(user=user)
+    return HttpResponse(assignments)
 @csrf_exempt
 def handleRequest(request):
     # Manually authenticate using JWT
