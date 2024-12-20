@@ -1,3 +1,4 @@
+import stat
 import django
 from django.http import HttpRequest, HttpResponse
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -8,8 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.models import User
 
-from base.models import UserAssignment
+from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, UserAssignment
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -30,9 +32,41 @@ class LoginView(APIView):
             })
         
         return Response({'error': 'Invalid credentials'}, status=400)
+def createAssignment(request: HttpRequest):
+    deadline = request.GET.get('deadline')
+    subject = request.GET.get('subject')
+    assignment_type = request.GET.get('type')  # Get the assignment type from the request
 
+    subjectObject = Subject.objects.get(name=subject)
+    assignmentTypeObject = AssignmentType.objects.get(type=assignment_type)
+    pendingStatus = AssignmentStatus.objects.get(id=2)  # Assuming id 2 is for "Pending" status
 
+    auth = JWTAuthentication()
+    try:
+        user, _ = auth.authenticate(request)
+        if user.is_superuser:
+            assignment = Assignment.objects.create(subject=subjectObject, type=assignmentTypeObject, deadline=deadline)
+            
+            # Create a UserAssignment for each user with the new assignment and pending status
+            users = User.objects.all()
+            for user in users:
+                UserAssignment.objects.create(user=user, assignment=assignment, status=pendingStatus)
+            
+            return HttpResponse(assignment)
+    except AuthenticationFailed:
+        return HttpResponse("Authentication failed", status=401)
 
+def getMaterial(request : HttpRequest):
+    subject = request.GET.get('subject')
+    materials = Materials.objects.filter(subject__name=subject)
+    return HttpResponse(materials)
+
+def addMaterial(request : HttpRequest):
+    subject = request.GET.get('subject')
+    file = request.FILES['file']
+    subjectObject = Subject.objects.get(name=subject)
+    material = Materials.objects.create(subject=subjectObject, file=file)
+    return HttpResponse(material, status=201)
 @csrf_exempt
 def handleRequest(request):
     # Manually authenticate using JWT
