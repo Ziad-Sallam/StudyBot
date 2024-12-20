@@ -27,7 +27,7 @@ class LoginView(APIView):
             
             # Check if the user is a superuser (administrator)
             is_admin = user.is_superuser
-            
+            user.last_login = django.utils.timezone.now()
             return Response({
                 'refresh': str(refresh),
                 'access': str(access_token),
@@ -175,10 +175,9 @@ def getAssignments(request : HttpRequest):
             return HttpResponse("Authentication failed", status=401)
         user = user[0]
         assignments = UserAssignment.objects.filter(user=user)
-        for assignment in assignments:
-            print(assignment.assignment.id, assignment.assignment.subject.name, assignment.assignment.type.type, assignment.assignment.deadline, assignment.status.status)
         assignments_list = []
         for assignment in assignments:
+                assignment.seen = True
                 assignment_data = {
                     'id': assignment.assignment.id,
                     'subject': assignment.assignment.subject.name,
@@ -186,7 +185,7 @@ def getAssignments(request : HttpRequest):
                     'deadline': assignment.assignment.deadline,
                     'status': assignment.status.status,  # Assuming the status has a name field
                 }
-                print(f"{assignment_data} is the assignment data")
+                assignment.save()
                 assignments_list.append(assignment_data)
 
         # Return the assignments in the response
@@ -208,6 +207,8 @@ def deleteTask(request : HttpRequest):
                 return HttpResponse("Authentication failed", status=401)
             user = user[0]
             task = Tasks.objects.get(id=id, user=user)
+            if task is None:
+                return HttpResponse("Task not found", status=404)
             task.delete()
             return HttpResponse("Task deleted", status=200)
         except:

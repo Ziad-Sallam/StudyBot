@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # For token authentication
     'corsheaders',
+    'django_celery_beat',
+
 
 ]
 REST_FRAMEWORK = {
@@ -145,3 +147,6 @@ SIMPLE_JWT = {
 }
 
 SECRET_KEY = 'django-in'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use Redis as the message broker
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
