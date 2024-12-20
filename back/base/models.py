@@ -15,6 +15,7 @@ class Assignment(models.Model):
         on_delete=models.CASCADE,
         default=1  # Replace `1` with an appropriate value from your database
     )
+    deadline = models.DateTimeField(null=True, blank=True)
 
 class AssignmentType(models.Model):
     type = models.CharField(max_length=20, unique=True)
@@ -27,7 +28,7 @@ class UserAssignment(models.Model):
     assignment = models.ForeignKey("Assignment", on_delete=models.CASCADE)
     status = models.ForeignKey("AssignmentStatus", on_delete=models.CASCADE)
     def __str__(self):
-        return f"user : {self.user.username} for assignment number : {self.assignment.id} for subject : {self.assignment.subject} status : {self.status.status}"
+        return f"user : {self.user} for assignment number : {self.assignment} for subject : {self.assignment.subject} status : {self.status.status}"
 
 class Tasks(models.Model):
     description = models.TextField()
@@ -36,4 +37,4 @@ class Tasks(models.Model):
 
 class Materials(models.Model):
     subject = models.ForeignKey("Subject", on_delete=models.CASCADE)
-    file = models.FileField(upload_to='library/')
+    file = models.BinaryField()
