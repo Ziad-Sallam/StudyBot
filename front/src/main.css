@@ -8,9 +8,9 @@ body{
     padding: 0;
     margin: 0;
 }
-.navbar{
+.nav{
     padding: 0;
-    color: #000;
+    color: #fff;
     background-color: transparent !important;
 }
 .navbar-nav{
@@ -54,7 +54,7 @@ body{
     font-size: 55px;
 }
 .nav-item{
-    color: white;
+    color: white; !important;
     padding: 10px;
     font-size: 20px;
 }
