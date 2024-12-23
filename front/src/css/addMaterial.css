@@ -1,0 +1,62 @@
+.add-material {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 16px;
+    border-radius: 28px;
+    margin-right: 40px;
+}
+
+.add-material * {
+    margin: 20px;
+}
+
+.file-input {
+    position: absolute;
+
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+    width: 0;
+
+}
+
+.file-input-div {
+    background-color: lightslategray;
+    border-radius: 20px;
+    padding: 0;
+    height: 325px;
+    width: 655px;
+}
+
+.file-label {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding-top: 17%;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 50px;
+}
+
+.file-label:hover {
+    background-color: #181A3D;
+}
+.file-input:hover {
+    background-color: #181A3D;
+}
+
+.add-material-btn{
+    background-color: #65558F;
+    border-radius: 100px;
+    color: white;
+}
+.add-material-btn:hover{
+    background-color: #360033;
+    color: white;
+}

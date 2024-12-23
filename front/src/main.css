@@ -1,0 +1,99 @@
+body{
+
+    background-image: linear-gradient(to right, #360033, #0B8793);
+    padding-left: 77px !important;
+}
+
+#root{
+    padding: 0;
+    margin: 0;
+}
+.nav{
+    padding: 0;
+    color: #fff;
+    background-color: transparent !important;
+}
+.navbar-nav{
+    margin-right: 10px;
+    margin-left: auto;
+
+}
+.navbar-brand{
+    font-weight: bold;
+    color: white;
+    font-size: 30px;
+}
+.container-fluid{
+    color: black;
+    background-color: transparent !important;
+    padding: 15px;
+    border: none;
+}
+
+.nav-link{
+    color: white;
+}
+.mainContainer{
+    display: flex;
+
+}
+.mt-5{
+
+    width: 600px;
+    height: 800px;
+    transform: scale(1.1);
+}
+/* CSS */
+.gradient-bg {
+
+}
+.logo{
+    font-family: "Lemon", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 55px;
+}
+.nav-item{
+    color: white; !important;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.main-page{
+    display: flex;
+    margin-top: 10px;
+}
+.chat{
+    margin-left: 70px;
+    margin-right: 70px;
+    flex: 4;
+
+}
+.chat-box{
+    border-radius: 15px;
+    background-color: rgba(255,255,255,0.1);
+
+}
+.todo-list{
+    flex: 1;
+}
+
+.user-bubble{
+    padding: 10px;
+    color: white;
+    border-radius: 20px;
+    max-width: 60%;
+    background: linear-gradient(to right, #1E5A74, #237885);
+    background-blend-mode: color-burn;
+
+
+}
+
+.bot-bubble{
+    padding: 10px;
+    color: white;
+    border-radius: 20px;
+    max-width: 70%;
+    mix-blend-mode: color-burn;
+    background: linear-gradient(to right, #181A3D, #0D2B45); ;
+}

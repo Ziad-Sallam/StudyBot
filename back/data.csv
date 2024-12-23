@@ -1,0 +1,61 @@
+text,category
+"I need to get materials for my class.",0
+"Can you provide the course resources?",0
+"Where can I find the lecture slides?",0
+"Fetch the materials for tomorrow's session.",0
+"I want to retrieve the study guides.",0
+"Please give me all the study material.",0
+"Get all the PDFs for my course.",0
+"I want to download the notes for the next lecture.",0
+"Share the materials for the upcoming test.",0
+"Can you send me the books for this course?",0
+"Can you tell me the pending tasks?",1
+"List all my upcoming tasks.",1
+"What tasks do I have to complete?",1
+"Show me my to-do list.",1
+"What are the tasks I need to work on?",1
+"Do I have any tasks left to finish?",1
+"Can you summarize all my tasks?",1
+"Check my task list for today.",1
+"Let me know about the tasks in progress.",1
+"Update me about my scheduled tasks.",1
+"I need details of my assignments.",2
+"Can you fetch my current assignments?",2
+"Show me my completed assignments.",2
+"What assignments are due this week?",2
+"Tell me about my pending assignments.",2
+"Do I have any assignments to submit?",2
+"Fetch the assignment details for me.",2
+"Get the list of assignments from the portal.",2
+"Provide me with the assignment deadlines.",2
+"Let me know the topic of my next assignment.",2
+"Add this task to my schedule.",3
+"Please create a new task for today.",3
+"Insert a task to my list.",3
+"Schedule this task for me.",3
+"Add a task to my calendar.",3
+"Include this as a task for next week.",3
+"Create a task in my to-do list.",3
+"Add another task under my name.",3
+"Put this as a priority task for the day.",3
+"Add this task to my reminders.",3
+"Add an assignment to this course.",4
+"Include this in my assignment list.",4
+"Add the following as a new assignment.",4
+"Set up this assignment for my students.",4
+"Create a new assignment on this topic.",4
+"Upload this as an assignment for the class.",4
+"Add an assignment to the project folder.",4
+"Include this assignment in the list.",4
+"Set the deadline for this assignment.",4
+"Register this assignment under my account.",4
+"This doesn't fit any category.",5
+"I'm not sure about this.",5
+"Can you clarify this for me?",5
+"I don't understand the context.",5
+"This is unrelated to my tasks.",5
+"I need help categorizing this.",5
+"This seems irrelevant.",5
+"I'm unsure where this belongs.",5
+"Can you handle this as a general case?",5
+"None of the categories match this.",5
