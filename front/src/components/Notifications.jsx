@@ -17,7 +17,7 @@ function Notifications(props) {
             {props.notifications.map((notification,index) => (
                 <div key={index} className="notification">
                     <h6 className={"notification-title"}>{notification.title}</h6>
-                    <hr/>
+
                     <p className="notification-description">{notification.description}</p>
                 </div>
             ))}

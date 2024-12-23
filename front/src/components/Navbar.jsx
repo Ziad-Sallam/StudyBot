@@ -12,16 +12,16 @@ function Navbar() {
     const [notification,setNotification] = useState(false);
     const notify = [
         {
-        title: "xxxx",
-        description: "xxxx",
+        title: "New HCI assignment",
+        description: "check your todo list ",
         },
         {
-            title: "xxxx",
-            description: "xxxx",
+            title: "Example",
+            description: "this is an example",
         },
         {
-            title: "xxxx",
-            description: "xxxx",
+            title: "Lecture canceled",
+            description: "tomorrow’s numerical lecture has postponed",
         },
     ]
 
@@ -49,8 +49,6 @@ function Navbar() {
                         <li className="nav-item">
                             <a className="nav-link" ><AccountCircleIcon/>{params.user}</a>
                         </li>
-
-
                     </div>
                 </div>
 

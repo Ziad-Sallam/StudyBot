@@ -10,11 +10,12 @@
     max-height: 300px;
     overflow-y: auto;
     scrollbar-width: none;
+    color: white;
 
 
 }
 .notifications-box .notification {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(147, 178, 185, 0.95);
     border-radius: 30px;
     padding: 5px 10px 5px 23px;
     margin-bottom: 8px;
