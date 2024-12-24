@@ -15,15 +15,15 @@ const router = createBrowserRouter([
     },
 
     {
-        path: '/:user',
+        path: '/:user/:token',
         element: <App />,
     },
     {
-        path: '/:user/library',
+        path: '/:user/:token/library',
         element: <Library/>
     },
     {
-        path: '/:user/addMaterial',
+        path: '/:user/:token/addMaterial',
         element: <AddMaterial/>
     }
 ])

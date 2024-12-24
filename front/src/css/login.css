@@ -42,7 +42,7 @@ body {
     margin-bottom: 0;
     border-radius: 0;
 }
-.form-signin input[type="email"] {
+.form-signin #inputEmail {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
