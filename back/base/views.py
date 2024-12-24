@@ -37,7 +37,7 @@ class LoginView(APIView):
             #     'is_admin': is_admin,  # Add the is_admin field to the response
             # })
             return Response(headers={
-                "token" : str(access_token),
+                "Authorization" : str(access_token),
                 "is_admin" : is_admin
             },data={
                 "message": "Login successful"
