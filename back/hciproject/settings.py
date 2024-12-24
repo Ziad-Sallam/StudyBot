@@ -56,6 +56,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this line
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -153,6 +154,7 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 CORS_EXPOSE_HEADERS = [
     'Authorization',
+    'is_admin',
 ]
 
 CORS_ALLOW_HEADERS = [

@@ -1,11 +1,7 @@
 import base64
 import json
-import os
-import stat
 import django
-from django.http import FileResponse, HttpRequest, HttpResponse, JsonResponse
-import jwt
-from pydantic import Json
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,7 +11,6 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
-from sympy import false, use
 from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, Tasks, UserAssignment
 from .SpacyModel import QueryHandler
 class LoginView(APIView):
