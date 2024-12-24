@@ -23,23 +23,20 @@ function LogIn() {
 
     async function handleLogin(e) {
         const params = {
-            email: email,
+            username: email,
             password: password,
         };
-        navigate(`/${params.email}`)
+
         e.preventDefault();
 
         console.log(email);
         console.log(password);
         try {
-            const response = await axios.get("http://localhost:8080/api/users/signin", {
-                params: { ...params }
-            });
+            const response = await axios.post("http://127.0.0.1:8000/api/token/", params);
             console.log(response.data);
-            const user = response.data
-
-            // Optionally navigate after successful login
-
+            const user = response.headers.authorization;
+            console.log(user)
+            navigate(`/${email}/${user}`)
 
 
         } catch (error) {
@@ -47,7 +44,6 @@ function LogIn() {
         }
 
     }
-
 
     return (
         <>
@@ -58,7 +54,7 @@ function LogIn() {
                     <div className={"logo"}>Trixie</div>
                     <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
                     {/*<label htmlFor="inputEmail" className="sr-only">Email address</label>*/}
-                    <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required
+                    <input type="text" id="inputEmail" className="form-control" placeholder="Username..." required
                            autoFocus value={email} onChange={handleEntryChange}/>
                     {/*<label htmlFor="inputPassword" className="sr-only">Password</label>*/}
                     <input type="password" id="inputPassword" className="form-control last" placeholder="Password" required value={password}

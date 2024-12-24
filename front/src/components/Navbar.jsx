@@ -29,7 +29,7 @@ function Navbar() {
 
         <nav className="navbar navbar-expand-lg navbar-light bg-transparent">
             <div className="container-fluid">
-                <a className="navbar-brand logo" href={`/${params.user}`} >Trixie</a>
+                <a className="navbar-brand logo" href={`/${params.user}/${params.token}`} >Trixie</a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="true"  aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -38,10 +38,10 @@ function Navbar() {
                     <div className="navbar-nav">
 
                         <li className="nav-item">
-                            <a className="nav-link" href={`/${params.user}/addMaterial`}>Add Material</a>
+                            <a className="nav-link" href={`/${params.user}/${params.token}/addMaterial`}>Add Material</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href={`/${params.user}/library`}>Library</a>
+                            <a className="nav-link" href={`/${params.user}/${params.token}/library`}>Library</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" onClick={()=> setNotification(!notification)}><NotificationsIcon color={"inhert"}/>Notification</a>

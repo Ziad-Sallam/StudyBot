@@ -14,17 +14,13 @@ function ChatBox() {
         try {
             // Send message to the backend
             const response = await axios.post(
-                'http://localhost:8080/Calculate',
-                { expression: mymessage },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
+                'http://127.0.0.1:8000/handle-request',
+                { query: mymessage },
             );
 
+            console.log(response.data);
             // Add bot's response to the screen
-            const botReply = response.data.reply || 'No response from bot';
+            const botReply = response.data.response || 'No response from bot';
             setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botReply }]);
         } catch (e) {
             console.error('Error:', e);

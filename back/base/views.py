@@ -1,5 +1,6 @@
 import base64
 import json
+from os import stat
 import django
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -46,7 +47,8 @@ def createAssignment(request: HttpRequest):
         deadline = data.get('deadline')
         subject = data.get('subject')
         assignment_type = data.get('type')
-        print(deadline,subject,assignment_type)
+        description = data.get('description')
+        print(description)
         subjectObject = Subject.objects.get(name=subject)
         assignmentTypeObject = AssignmentType.objects.get(type=assignment_type)
         pendingStatus = AssignmentStatus.objects.get(id=2)  # Assuming id 2 is for "Pending" status
@@ -55,7 +57,7 @@ def createAssignment(request: HttpRequest):
         try:
             user, _ = auth.authenticate(request)
             if user.is_superuser:
-                assignment = Assignment.objects.create(subject=subjectObject, type=assignmentTypeObject, deadline=deadline)
+                assignment = Assignment.objects.create(subject=subjectObject, type=assignmentTypeObject, deadline=deadline, description=description)
 
                 # Create a UserAssignment for each user with the new assignment and pending status
                 users = User.objects.all()
@@ -250,11 +252,13 @@ def completeAssignment(request : HttpRequest):
                 return HttpResponse("Authentication failed", status=401)
             user = user[0]
             assignment = UserAssignment.objects.get(user=user, assignment_id=assignment_id)
-            assignment.status = AssignmentStatus.objects.get(status="Submitted")
+            status_object = AssignmentStatus.objects.get(status="Submitted")
+            assignment.status = status_object
             assignment.save()
             return HttpResponse("Assignment completed", status=200)
         except:
             return HttpResponse("Error", status=400)
+       
 @csrf_exempt
 def deleteAssignment(request : HttpRequest):
     if request.method == "POST":
