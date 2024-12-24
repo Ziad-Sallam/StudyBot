@@ -17,6 +17,7 @@ class Assignment(models.Model):
         default=1  # Replace `1` with an appropriate value from your database
     )
     deadline = models.DateTimeField(null=True, blank=True)
+    description = models.TextField(default="No description")
 
 class AssignmentType(models.Model):
     type = models.CharField(max_length=20, unique=True)

@@ -187,7 +187,8 @@ def getAssignments(request : HttpRequest):
                     'type': assignment.assignment.type.type,
                     'deadline': assignment.assignment.deadline,
                     'status': assignment.status.status,  # Assuming the status has a name field
-                    'seen' : assignment.seen
+                    'seen' : assignment.seen,
+                    'description': assignment.assignment.description,
                 }
                 assignments_list.append(assignment_data)
 
