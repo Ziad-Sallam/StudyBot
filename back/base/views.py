@@ -12,7 +12,6 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
-from yaml import serialize
 from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, Tasks, UserAssignment
 from .SpacyModel import QueryHandler
 from .serializers.SubjectSerializer import SubjectSerializer
