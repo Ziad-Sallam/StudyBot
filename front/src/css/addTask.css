@@ -1,0 +1,11 @@
+.add-task{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.add-task-input{
+    background-color: transparent;
+    color: white;
+    border: none;
+}

@@ -10,6 +10,7 @@ import AddMaterial from "./AddMaterial.jsx";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import {useEffect, useState} from "react";
+import Task from "./components/Task.jsx";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         {title:"Todo 1", description:"answers to a frequently asked questions", date: '15/11/2024'},
         {title: 'Todo 2', description: "description2", date: '30/11/2024'}
     ])
+    const [tasks,setTasks]=useState([]);
 
     useEffect(() => {
         const getTodo = async () =>{
@@ -29,6 +31,14 @@ function App() {
             }catch(error){
                 console.log(error)
             }
+
+            try{
+                const response = await axios.get("http://127.0.0.1:8000/get-tasks")
+                console.log(response.data)
+                setTasks(response.data.tasks)
+            }catch (error){
+                console.log(error)
+            }
         }
         getTodo()
     },[])
@@ -37,12 +47,15 @@ function App() {
     return (
         <>
             <Navbar/>
-              <div className={"main-page"}>
-                  <ToDo
-                      todo={todo}
-                  />
-                  <ChatBox/>
-              </div>
+            <div className={"main-page"}>
+                <div>
+                    <h3 style={{color: "white"}}>Assignments:</h3>
+                    <ToDo todo={todo}/>
+
+                    <Task todo={tasks}/>
+                </div>
+                <ChatBox/>
+            </div>
 
         </>
     )

@@ -32,21 +32,18 @@ function ToDo(props){
 
     return (
         <div className="row todo-list">
+            <div>
 
-            <table className="list-group">
-                <tbody style={{borderRadius: "20px"}}>
-                {props.todo.map((item,index) =>
-                    <ToDoItem
-                        key={index}
-                        title={item.subject}
-                        description={item.type}
-                        date={formatDate(item.deadline)}
-                    />
-                )}
-                </tbody>
 
-            </table>
-
+                    {props.todo.map((item, index) =>
+                        <ToDoItem
+                            key={index}
+                            title={item.subject + " " + item.type}
+                            description={item.description}
+                            date={formatDate(item.deadline)}
+                        />
+                    )}
+            </div>
 
 
         </div>
