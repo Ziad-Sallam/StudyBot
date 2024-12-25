@@ -1,6 +1,5 @@
 import base64
 import json
-from os import stat
 import django
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,8 +11,7 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
-from yaml import serialize
-from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, Tasks, UserAssignment
+from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Notification, Subject, Tasks, UserAssignment, userNotification
 from .SpacyModel import QueryHandler
 from .serializers.SubjectSerializer import SubjectSerializer
 class LoginView(APIView):
@@ -306,6 +304,76 @@ def getSubjectList(request : HttpRequest):
     else:
         return HttpResponse("Method not allowed", status=405)
 @csrf_exempt
+def getNotifications(request : HttpRequest):
+    if request.method == "POST":
+        jwt = JWTAuthentication()
+        user = jwt.authenticate(request)
+        if user is None:
+            return HttpResponse("Authentication failed", status=401)
+        user = user[0]
+        notifications = userNotification.objects.filter(user=user)
+        notification_list = []
+        for notification in notifications:
+            if notification.seen == False:
+                notification_list.append({
+                    'title': notification.notification.title,
+                    'description': notification.notification.description,
+                    'seen': notification.seen
+                })
+        return JsonResponse({
+            "notifications": notification_list
+        })
+    else:
+        return HttpResponse("Method not allowed", status=405)
+@csrf_exempt
+def createNotification(request: HttpRequest):
+    if request.method == 'POST':
+        try:
+            user , _ = JWTAuthentication().authenticate(request)
+            if not user.is_superuser:
+                return HttpResponse("You are not authorized to create notifications", status=403)
+            data = json.loads(request.body)
+            title = data.get('title')
+            description = data.get('description')
+            notification = Notification.objects.create(title=title, description=description)
+            users = User.objects.all()
+            for user in users:
+                userNotification.objects.create(user=user, notification=notification, seen=False)
+            return HttpResponse("Notification created", status=201)
+        except:
+            return HttpResponse("Error", status=400)
+@csrf_exempt
+def setNotificationAsSeen(request: HttpRequest):
+    if request.method == "POST":
+        jwt = JWTAuthentication()
+        user, _ = jwt.authenticate(request)
+        if user is None:
+            return HttpResponse("Authentication failed", status=401)
+
+        data = json.loads(request.body)
+        idList = data.get('idList')
+
+        if not idList:
+            return HttpResponse("No notifications to delete", status=400)
+
+        # Try to delete notifications
+        for id in idList:
+            try:
+                # Fetch notification by its ID and the associated user
+                notification = userNotification.objects.get(notification_id=id, user=user)
+                print(f"Deleting notification: {notification}")
+                
+                # Delete the notification
+                notification.delete()
+                print(f"Notification with ID {id} deleted.")
+
+            except userNotification.DoesNotExist:
+                # If notification does not exist, log it
+                print(f"Notification with ID {id} not found for user {user}")
+                continue
+
+        return HttpResponse("Notifications deleted successfully", status=200)
+@csrf_exempt
 def handleRequest(request : HttpRequest):
     # Manually authenticate using JWT
     auth = JWTAuthentication()
@@ -316,13 +384,13 @@ def handleRequest(request : HttpRequest):
     query = data.get('query')
     handler = QueryHandler()
     response = handler.identify_query(query)
-    if response == "create assignment":
+    if response == "create assignment" or response == "create notification":
         if not user.is_superuser:
             return JsonResponse({
                  "response":"You are not authorized to create assignments"}, status=403)
         else:
             return JsonResponse({
-                "response":"create assignment"
+                "response":response
             }
             , status=200)
     else:

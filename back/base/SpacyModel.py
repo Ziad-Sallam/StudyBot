@@ -11,15 +11,17 @@ class QueryHandler:
             "get material": self.nlp("get material"),
             "create task": self.nlp("create task"),
             "create assignment": self.nlp("create assignment"),
+            "create notification": self.nlp("create notification"),
         }
         # Assign weights to specific words to adjust their impact on similarity
         self.weights = {
             "assignment": 1.2,  # Boost for "assignment"
             "task": 1.2,        # Boost for "task"
+            "notification" : 1.2, # Boost for "notification"
         }
         # Hardcoded synonymous verbs for "get" and "create"
         self.get_synonyms = ["get", "retrieve", "fetch", "obtain", "acquire", "see", "view"]        
-        self.create_synonyms = ["create", "build", "make", "produce", "construct", "generate", "add", "set"]
+        self.create_synonyms = ["create", "build", "make", "produce", "construct", "generate", "add", "set", "send"]
 
     def is_synonym(self, token, verb_group):
         """Check if a token is a synonym of a specific verb group using hardcoded values."""
@@ -60,11 +62,13 @@ class QueryHandler:
 
         # Penalty if query contains 'task(s)' but reference phrase contains 'assignment(s)'
         query_lemmas = [token.lemma_ for token in query]
-        if "task" in query_lemmas and "assignment" in phrase:
+        if "task" in query_lemmas and ("assignment" in phrase or "notification" in phrase):
             # print(f"Task(s) in query, assignment(s) in phrase: {similarity:.4f}")
             similarity -= 0.4
-        elif "assignment" in query_lemmas and "task" in phrase:
+        elif "assignment" in query_lemmas and ("task" in phrase or "notification" in phrase):
             # print(f"Assignment(s) in query, task(s) in phrase: {similarity:.4f}")
+            similarity -= 0.4
+        elif "notification" in query_lemmas and ("task" in phrase or "assignment" in phrase):
             similarity -= 0.4
 
         return similarity
@@ -85,33 +89,29 @@ class QueryHandler:
         if contains_create and contains_material:
             return "This command can't be used here"
 
-        # print(contains_get, contains_create, contains_material)
-        # print("Debugging Similarity Scores with Weights, Keyword, and Verb Synonym Priority:")
+        # Debugging: print similarities for each reference phrase
         for phrases, doc in self.reference_phrases.items():
             if phrases == "get material" and not contains_material:
-                # Set similarity to 0 if the query does not contain "material"
-                # print(f"Setting similarity of 'get material' to 0 for the query '{query_doc.text}'.")
-                similarity = 0
+                similarity = 0  # Set similarity to 0 if the query does not contain "material"
             else:
                 similarity = self.adjust_similarity(query_doc, doc, contains_get, contains_create)
                 similarity = self.apply_penalty(similarity, contains_get, contains_create, phrases, query_doc)
 
-                # print(f"Base similarity of '{query_doc.text}' with '{phrases}' is {similarity:.4f}")
+            # Boost similarity for hardcoded synonyms of "get" or "create"
+            if contains_get and "get" in phrases:
+                similarity += 0.3
+            elif contains_create and "create" in phrases:
+                similarity += 0.3
 
-                # Boost similarity for hardcoded synonyms of "get" or "create"
-                if contains_get and "get" in phrases:
-                    similarity += 0.3
-                elif contains_create and "create" in phrases:
-                    similarity += 0.3
-
-                # print(f"Adjusted similarity of '{query_doc.text}' with '{phrases}' is {similarity:.4f}")
+            # Print similarity for debugging
+            print(f"Similarity between '{query_doc.text}' and '{phrases}': {similarity:.4f}")
 
             if similarity > max_similarity:
                 most_similar = phrases
                 max_similarity = similarity
 
         # Threshold check
-        return most_similar if max_similarity > threshold else "I am sorry I didnt get that. Can you please rephrase?"
+        return most_similar if max_similarity > threshold else "I am sorry I didn't get that. Can you please rephrase?"
 
 
 

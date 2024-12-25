@@ -1,3 +1,4 @@
+from pyexpat import model
 from turtle import mode
 from django.db import models
 from django.contrib.auth.models import User
@@ -40,3 +41,14 @@ class Tasks(models.Model):
 class Materials(models.Model):
     subject = models.ForeignKey("Subject", on_delete=models.CASCADE)
     file = models.BinaryField()
+
+class Notification(models.Model):
+    title = models.CharField(max_length=50)
+    description = models.TextField()
+
+class userNotification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Referencing built-in User model
+    notification = models.ForeignKey("Notification", on_delete=models.CASCADE)
+    seen = models.BooleanField(default=False)
+    def __str__(self):
+        return f"user : {self.user} notification : {self.notification} seen : {self.seen}"

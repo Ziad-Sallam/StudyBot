@@ -16,4 +16,7 @@ urlpatterns= [
     path('delete-assignment',deleteAssignment,name="delete-assignment"),
     path('set-seen', setAssignmentAsSeen, name="set-seen"),
     path('get-subjects',getSubjectList,name="get-subjects"),
+    path('get-notifications',getNotifications,name="get-notifications"),
+    path('set-notification-seen',setNotificationAsSeen,name="set-notification-seen"),
+    path('create-notification',createNotification,name="create-notification"),
 ]
