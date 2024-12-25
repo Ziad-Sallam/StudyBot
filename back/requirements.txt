@@ -6,4 +6,4 @@ pip insall celery
 pip install django-cors-headers
 pip install djangorestframework
 pip install spacy
-
+pip install fuzzywuzzy
