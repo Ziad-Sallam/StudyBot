@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import AddAssignmentWidget from "./AddAssignmentWidget.jsx";
 
 function ChatBox() {
     const [mymessage, setMymessage] = useState('');
@@ -13,7 +14,7 @@ function ChatBox() {
         setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: mymessage }]);
 
         try {
-            if(action ===""){
+            if(action ==="" || action === "create assignment"){
                 // Send message to the backend
                 const response = await axios.post(
                     'http://127.0.0.1:8000/handle-request',
@@ -31,8 +32,13 @@ function ChatBox() {
                     setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "what is the description of this task ?" }]);
 
                 }
+                else if(botReply === "create assignment"){
+                    setAction("create assignment")
+
+                }
                 else{
                     setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botReply }]);
+                    setAction("")
                 }
 
             } else if(action === "create task"){
@@ -45,6 +51,7 @@ function ChatBox() {
                 setAction("")
 
             }
+
 
 
         } catch (e) {
@@ -85,7 +92,7 @@ function ChatBox() {
                         </div>
                     ))}
                 </div>
-
+                {action === "create assignment" &&<AddAssignmentWidget/>}
                 <div className="input-group">
                     <input
                         type="text"

@@ -53,7 +53,7 @@ function Navbar() {
                 </div>
 
             </div>
-            {notification && (<Notifications notifications={notify} />)}
+            {notification && (<Notifications />)}
         </nav>
     )
 }

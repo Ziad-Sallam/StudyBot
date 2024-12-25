@@ -1,0 +1,17 @@
+.add-assignment-widget-container button{
+    width: 200px;
+    margin: 10px;
+
+}
+
+.add-assignment-widget {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly !important;
+
+
+}
+.add-assignment-widget label{
+    margin: 5px;
+    color: white;
+}
