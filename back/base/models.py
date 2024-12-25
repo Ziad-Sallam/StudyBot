@@ -1,7 +1,6 @@
 from turtle import mode
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 
 class Subject(models.Model):
     name = models.CharField(max_length=40)

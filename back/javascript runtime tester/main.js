@@ -5,8 +5,8 @@ let fetchToken = async () => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            username: "brbs",
-            password: "TheBrbs1231236161^^",
+            username: "administrator",
+            password: "123admin123",
         }),
     });
 

@@ -15,4 +15,5 @@ urlpatterns= [
     path('complete-assignment',completeAssignment,name="complete-assignment"),
     path('delete-assignment',deleteAssignment,name="delete-assignment"),
     path('set-seen', setAssignmentAsSeen, name="set-seen"),
+    path('get-subjects',getSubjectList,name="get-subjects"),
 ]

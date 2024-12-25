@@ -295,7 +295,18 @@ def setAssignmentAsSeen(request : HttpRequest):
                 assignment.seen = True
                 assignment.save()
             return HttpResponse("Assignment marked as seen", status=200)
-       
+@csrf_exempt
+def getSubjectList(request : HttpRequest):
+    if request.method == "POST":
+        subjects = Subject.objects.all()
+        subject_list = []
+        for subject in subjects:
+            subject_list.append(subject.name)
+        return JsonResponse({
+            "subjects": subject_list
+        })
+    else:
+        return HttpResponse("Method not allowed", status=405)
 @csrf_exempt
 def handleRequest(request : HttpRequest):
     # Manually authenticate using JWT
