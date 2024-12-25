@@ -18,26 +18,29 @@ function ToDoItem(props) {
     return (
         <div className={"todo-item " + (on? "todo-item-on" :"todo-item-off")} onClick={onToggle}>
             <table className="list-group">
-            <tr className=" d-flex justify-content-between align-items-start">
-                <th>
-                    <div className="ms-2 me-auto">
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input me-1 check" type="checkbox" value=""
-                                   id="firstCheckbox"/>
+                <tbody>
+                <tr className=" d-flex justify-content-between align-items-start">
+                    <th>
+                        <div className="ms-2 me-auto">
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input me-1 check" type="checkbox" value=""
+                                       id="firstCheckbox"/>
 
-                            <div className="fw-bold text-white">{props.title}</div>
+                                <div className="fw-bold text-white">{props.title}</div>
 
 
+                            </div>
                         </div>
-                    </div>
-                </th>
-                <th className="table-responsive-lg">
-                    <div className="ms-2 me-auto text-white">
-                        {props.date}
-                    </div>
-                </th>
+                    </th>
+                    <th className="table-responsive-lg">
+                        <div className="ms-2 me-auto text-white">
+                            {props.date}
+                        </div>
+                    </th>
 
-            </tr>
+                </tr>
+                </tbody>
+
             </table>
             {on && <div className="fw-medium text-white">{props.description}</div>}
 

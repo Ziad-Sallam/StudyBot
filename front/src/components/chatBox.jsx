@@ -4,6 +4,7 @@ import axios from 'axios';
 function ChatBox() {
     const [mymessage, setMymessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [action, setAction] = useState('');
 
     const handleSendClick = async () => {
         if (!mymessage.trim()) return;
@@ -12,16 +13,40 @@ function ChatBox() {
         setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: mymessage }]);
 
         try {
-            // Send message to the backend
-            const response = await axios.post(
-                'http://127.0.0.1:8000/handle-request',
-                { query: mymessage },
-            );
+            if(action ===""){
+                // Send message to the backend
+                const response = await axios.post(
+                    'http://127.0.0.1:8000/handle-request',
+                    { query: mymessage },
+                );
 
-            console.log(response.data);
-            // Add bot's response to the screen
-            const botReply = response.data.response || 'No response from bot';
-            setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botReply }]);
+                console.log(response.data);
+                // Add bot's response to the screen
+                const botReply = response.data.response || 'No response from bot';
+                if (botReply === "create task"){
+                    setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "what is the description of this task ?" }]);
+                    setAction("create task")
+
+                } else if(botReply === "get assignment"){
+                    setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "what is the description of this task ?" }]);
+
+                }
+                else{
+                    setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botReply }]);
+                }
+
+            } else if(action === "create task"){
+                const params = {
+                    description: mymessage,
+                }
+                const response = axios.post("http://127.0.0.1:8000/create-task", params)
+                console.log(response.data);
+                setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "task created successfully! :)" }]);
+                setAction("")
+
+            }
+
+
         } catch (e) {
             console.error('Error:', e);
             setMessages((prevMessages) => [
