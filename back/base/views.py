@@ -12,8 +12,10 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
+from yaml import serialize
 from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Subject, Tasks, UserAssignment
 from .SpacyModel import QueryHandler
+from .serializers.SubjectSerializer import SubjectSerializer
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -299,12 +301,8 @@ def setAssignmentAsSeen(request : HttpRequest):
 def getSubjectList(request : HttpRequest):
     if request.method == "POST":
         subjects = Subject.objects.all()
-        subject_list = []
-        for subject in subjects:
-            subject_list.append(subject.name)
-        return JsonResponse({
-            "subjects": subject_list
-        })
+        serializer = SubjectSerializer(subjects, many=True)
+        return JsonResponse(serializer.data, safe=False)
     else:
         return HttpResponse("Method not allowed", status=405)
 @csrf_exempt
