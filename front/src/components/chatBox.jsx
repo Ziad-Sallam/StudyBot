@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import AddAssignmentWidget from "./AddAssignmentWidget.jsx";
+import CreateNotification from "./CreateNotification.jsx";
 
 function ChatBox() {
     const [mymessage, setMymessage] = useState('');
@@ -35,6 +36,8 @@ function ChatBox() {
                 else if(botReply === "create assignment"){
                     setAction("create assignment")
 
+                } else if(botReply === "create notification"){
+                    setAction("create notification")
                 }
                 else{
                     setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botReply }]);
@@ -93,6 +96,7 @@ function ChatBox() {
                     ))}
                 </div>
                 {action === "create assignment" &&<AddAssignmentWidget/>}
+                {action === "create notification" && <CreateNotification/>}
                 <div className="input-group">
                     <input
                         type="text"

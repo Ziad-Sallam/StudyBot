@@ -13,6 +13,7 @@ urlpatterns= [
     path('delete-task',deleteTask,name="delete-task"),
     path('complete-task',completeTask,name="complete-task"),
     path('complete-assignment',completeAssignment,name="complete-assignment"),
+    path('uncomplete-assignment',uncompleteAssignment,name="uncomplete-assignment"),
     path('delete-assignment',deleteAssignment,name="delete-assignment"),
     path('set-seen', setAssignmentAsSeen, name="set-seen"),
     path('get-subjects',getSubjectList,name="get-subjects"),

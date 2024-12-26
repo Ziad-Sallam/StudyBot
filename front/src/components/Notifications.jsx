@@ -17,16 +17,16 @@ function Notifications() {
     useEffect(() => {
         const getTodo = async () =>{
             try{
-                const response = await axios.post("http://127.0.0.1:8000/get-assignments")
-                const data = response.data.assignments
+                const response = await axios.post("http://127.0.0.1:8000/get-notifications")
+                const data = response.data.notifications
                 const x = data.filter(item=>!(item.seen))
                 console.log(x)
                 setSeen(x)
-                const ids = seen.map(item=>item.id)
-                const response1 = await axios.post("http://127.0.0.1:8000/set-seen",{idList:ids})
+                const ids = response.data.notifications.map(item=>item.id)
+                console.log(ids)
+                const response1 = await axios.post("http://127.0.0.1:8000/set-notification-seen",{idList:ids})
                 console.log(response1.data)
                 console.log(response.data)
-
 
             }catch(error){
                 console.log(error)
@@ -41,7 +41,7 @@ function Notifications() {
 
             {seen.map((notification,index) => (
                 <div key={index} className="notification">
-                    <h6 className={"notification-title"}>{notification.subject + " " + notification.type}</h6>
+                    <h6 className={"notification-title"}>{notification.title}</h6>
 
                     <p className="notification-description">{notification.description}</p>
                 </div>
