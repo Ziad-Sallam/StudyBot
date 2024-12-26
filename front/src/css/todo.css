@@ -17,3 +17,7 @@
     background: transparent;
     color: white;
 }
+.crossed{
+    text-decoration: line-through red;
+    color: white;
+}
