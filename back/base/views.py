@@ -384,10 +384,10 @@ def handleRequest(request : HttpRequest):
     query = data.get('query')
     handler = QueryHandler()
     response = handler.identify_query(query)
-    if response == "create assignment" or response == "create notification":
+    if response == "create assignment" or response == "create notification" or response == "create material":
         if not user.is_superuser:
             return JsonResponse({
-                 "response":"You are not authorized to create assignments"}, status=403)
+                 "response":"You are not authorized to do this action"}, status=403)
         else:
             return JsonResponse({
                 "response":response

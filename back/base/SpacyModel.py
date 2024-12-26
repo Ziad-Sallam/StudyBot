@@ -12,6 +12,7 @@ class QueryHandler:
             "create task": self.nlp("create task"),
             "create assignment": self.nlp("create assignment"),
             "create notification": self.nlp("create notification"),
+            "create material": self.nlp("create material"),
         }
         # Assign weights to specific words to adjust their impact on similarity
         self.weights = {
@@ -86,8 +87,8 @@ class QueryHandler:
         contains_material = any(token.lemma_ == "material" for token in query_doc)
 
         # Special condition: "create" and "material"
-        if contains_create and contains_material:
-            return "This command can't be used here"
+        # if contains_create and contains_material:
+        #     return "This command can't be used here"
 
         # Debugging: print similarities for each reference phrase
         for phrases, doc in self.reference_phrases.items():
