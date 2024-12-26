@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 import django
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -80,34 +81,26 @@ def getMaterial(request):
                 return JsonResponse({"error": "Subject is required"}, status=400)
 
             # Get the subject object
-            subjectObject = Subject.objects.get(name=subject)
+            subject_object = Subject.objects.get(name=subject)
 
             # Fetch materials for the subject
-            materials = Materials.objects.filter(subject=subjectObject)
+            materials = Materials.objects.filter(subject=subject_object)
 
             if not materials.exists():
                 return JsonResponse({"error": "No materials found for the subject"}, status=404)
-
-            # Prepare a list of base64-encoded binary data for each file
-            file_responses = []
+            
+            # Prepare a list of material IDs
+            material_responses = []
             for material in materials:
-                # Check if the material file is stored as bytes or a file-like object
-                if isinstance(material.file, bytes):
-                    # If the file is already a byte string, directly use it
-                    file_content = material.file
-                else:
-                    # Otherwise, read the file content (in case it's a FileField)
-                    file_content = material.file.read()  # Read the file content as bytes
-
-                # Encode the binary data to base64 to transfer over JSON
-                encoded_file_content = base64.b64encode(file_content).decode('utf-8')
-
-                file_responses.append({
-                    'file_content': encoded_file_content,  # Base64 encoded file content
+                file_name, file_extension = os.path.splitext(os.path.basename(material.file.name))
+                material_responses.append({
+                    'id': material.id,
+                    "name" : file_name,
+                    "type" : file_extension.lstrip('.').lower()
                 })
 
             return JsonResponse({
-                "files": file_responses
+                "materials": material_responses
             })
 
         except Subject.DoesNotExist:
@@ -125,17 +118,57 @@ def addMaterial(request):
             subject = request.POST.get('subject')
             file = request.FILES.get('file')
 
-            # Read the file content as bytes
-            file_content = file.read()
+            if not subject or not file:
+                return JsonResponse({"error": "Subject and file are required"}, status=400)
 
             # Fetch the subject object
-            subjectObject = Subject.objects.get(name=subject)
+            subject_object = Subject.objects.get(name=subject)
 
-            # Create a new material and store the file as a byte string
-            material = Materials.objects.create(subject=subjectObject, file=file_content)
+            # Create a new material and save the file
+            material = Materials.objects.create(subject=subject_object, file=file)
 
-            return JsonResponse({"message": "Material added successfully"}, status=201)
+            return JsonResponse({
+                "message": "Material added successfully",
+                "id": material.id,
+                "file_path": material.file.url
+            }, status=201)
 
+        except Subject.DoesNotExist:
+            return JsonResponse({"error": "Subject not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+@csrf_exempt
+def getMaterialData(request: HttpRequest):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            material_id = data.get('id')
+
+            if not material_id:
+                return JsonResponse({"error": "Material ID is required"}, status=400)
+
+            # Fetch the material object
+            material = Materials.objects.get(id=material_id)
+
+            # Read the file content
+            file_path = material.file.path
+            with open(file_path, 'rb') as f:
+                file_content = f.read()
+
+            # Encode the file content in base64 for safe JSON transfer
+            encoded_file_content = base64.b64encode(file_content).decode('utf-8')
+
+            return JsonResponse({
+                "id": material.id,
+                "file_name": material.file.name,  # Include the file name
+                "file_data": encoded_file_content  # Base64 encoded file content
+            })
+
+        except Materials.DoesNotExist:
+            return JsonResponse({"error": "Material not found"}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Exception as e:
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)

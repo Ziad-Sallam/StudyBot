@@ -40,7 +40,10 @@ class Tasks(models.Model):
 
 class Materials(models.Model):
     subject = models.ForeignKey("Subject", on_delete=models.CASCADE)
-    file = models.BinaryField()
+    file = models.FileField(upload_to="materials/")
+
+    def __str__(self):
+        return f"Material for {self.subject}"
 
 class Notification(models.Model):
     title = models.CharField(max_length=50)

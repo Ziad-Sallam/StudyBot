@@ -20,4 +20,5 @@ urlpatterns= [
     path('get-notifications',getNotifications,name="get-notifications"),
     path('set-notification-seen',setNotificationAsSeen,name="set-notification-seen"),
     path('create-notification',createNotification,name="create-notification"),
+    path('get-material-data',getMaterialData,name="get-material-data"),
 ]
