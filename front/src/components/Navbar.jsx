@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min'
 import {useParams} from "react-router-dom";
 import {useState} from "react";
 import Notifications from "./Notifications.jsx";
+import {CiLogout} from "react-icons/ci";
 
 function Navbar() {
     const params = useParams();
@@ -38,22 +39,27 @@ function Navbar() {
                     <div className="navbar-nav">
 
                         <li className="nav-item">
-                            <a className="nav-link" href={`/${params.user}/${params.token}/addMaterial`}>Add Material</a>
+                            <a className="nav-link" href={`/${params.user}/${params.token}/addMaterial`}>Add
+                                Material</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href={`/${params.user}/${params.token}/library`}>Library</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" onClick={()=> setNotification(!notification)}><NotificationsIcon color={"inhert"}/>Notification</a>
+                            <a className="nav-link" onClick={() => setNotification(!notification)}><NotificationsIcon
+                                color={"inhert"}/>Notification</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" ><AccountCircleIcon/>{params.user}</a>
+                            <a className="nav-link"><AccountCircleIcon/>{params.user}</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href={"/"}><CiLogout />Log Out</a>
                         </li>
                     </div>
                 </div>
 
             </div>
-            {notification && (<Notifications />)}
+            {notification && (<Notifications/>)}
         </nav>
     )
 }

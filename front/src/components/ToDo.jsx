@@ -1,7 +1,8 @@
 import 'react-resizable/css/styles.css';
 import ToDoItem from './ToDoItem.jsx'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import propTypes from 'prop-type'
+import axios from "axios";
 
 
 ToDo.propTypes ={
@@ -17,16 +18,26 @@ function ToDo(props){
             }
         );
     })
+    const [todo,setTodo] = useState([])
+
+    useEffect(() => {
+        const getTodo = async () =>{
+            try{
+                const response = await axios.post("http://127.0.0.1:8000/get-assignments")
+                setTodo(response.data.assignments)
+                console.log("look here :")
+                console.log(response.data.assignments)
+                console.log(todo)
+            }catch(error){
+                console.log(error)
+            }
 
 
+        }
+        getTodo()
+    },[])
 
-    function formatDate(dateString) { // Create a new Date object from the input string
-        const date = new Date(dateString); // Extract the date parts
-        const year = date.getUTCFullYear();
-        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(date.getUTCDate()).padStart(2, '0'); // Return the formatted date (YYYY-MM-DD)
-        return `${year}-${month}-${day}`;
-    }
+
 
 
 
@@ -35,12 +46,10 @@ function ToDo(props){
             <div>
 
 
-                    {props.todo.map((item, index) =>
+                    {todo.map((item, index) =>
                         <ToDoItem
                             key={index}
-                            title={item.subject + " " + item.type}
-                            description={item.description}
-                            date={formatDate(item.deadline)}
+                            item={item}
                         />
                     )}
             </div>

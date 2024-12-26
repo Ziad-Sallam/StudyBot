@@ -2,8 +2,10 @@ python -m spacy download en_core_web_md
 
 pip install django-admin
 pip install django
-pip insall celery
+pip intsall celery
 pip install django-cors-headers
 pip install djangorestframework
 pip install spacy
 pip install fuzzywuzzy
+pip install django-celery-beat
+pip install djangorestframework-simplejwt

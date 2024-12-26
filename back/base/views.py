@@ -232,6 +232,7 @@ def completeTask(request : HttpRequest):
             if user is None:
                 return HttpResponse("Authentication failed", status=401)
             user = user[0]
+
             task = Tasks.objects.get(id=id, user=user)
             task.flag = True
             task.save()
@@ -241,7 +242,34 @@ def completeTask(request : HttpRequest):
     else:
         return HttpResponse("Method not allowed", status=405)
 @csrf_exempt
-def completeAssignment(request : HttpRequest):
+def completeAssignment(request: HttpRequest):
+    if request.method == "POST":
+        try:
+            jwt = JWTAuthentication()
+            data = json.loads(request.body)
+            assignment_id = data.get('id')
+            print(assignment_id)
+            print(assignment_id)
+            user = jwt.authenticate(request)
+            print(assignment_id)
+            if user is None:
+                return HttpResponse("Authentication failed", status=401)
+            print(assignment_id)
+            user = user[0]
+            print(assignment_id)
+            assignment = UserAssignment.objects.get(user=user, assignment_id=assignment_id)
+            print(assignment_id)
+            status_object = AssignmentStatus.objects.get(status="Submitted")
+            print(assignment_id)
+            assignment.status = status_object
+
+            assignment.save()
+            return HttpResponse("Assignment back to pending", status=200)
+        except:
+            return HttpResponse("Error", status=400)
+
+@csrf_exempt
+def uncompleteAssignment(request: HttpRequest):
     if request.method == "POST":
         try:
             jwt = JWTAuthentication()
@@ -252,13 +280,14 @@ def completeAssignment(request : HttpRequest):
                 return HttpResponse("Authentication failed", status=401)
             user = user[0]
             assignment = UserAssignment.objects.get(user=user, assignment_id=assignment_id)
-            status_object = AssignmentStatus.objects.get(status="Submitted")
+            status_object = AssignmentStatus.objects.get(status="Pending")
             assignment.status = status_object
             assignment.save()
             return HttpResponse("Assignment completed", status=200)
         except:
             return HttpResponse("Error", status=400)
-       
+
+
 @csrf_exempt
 def deleteAssignment(request : HttpRequest):
     if request.method == "POST":
@@ -316,6 +345,7 @@ def getNotifications(request : HttpRequest):
         for notification in notifications:
             if notification.seen == False:
                 notification_list.append({
+                    'id': notification.notification.id,
                     'title': notification.notification.title,
                     'description': notification.notification.description,
                     'seen': notification.seen

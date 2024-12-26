@@ -27,6 +27,8 @@ function App() {
             try{
                 const response = await axios.post("http://127.0.0.1:8000/get-assignments")
                 setTodo(response.data.assignments)
+                console.log("look here :")
+                console.log(response.data.assignments)
                 console.log(todo)
             }catch(error){
                 console.log(error)
@@ -50,7 +52,7 @@ function App() {
             <div className={"main-page"}>
                 <div>
                     <h3 style={{color: "white"}}>Assignments:</h3>
-                    <ToDo todo={todo}/>
+                    <ToDo/>
 
                     <Task todo={tasks}/>
                 </div>
