@@ -50,7 +50,7 @@ class QueryHandler:
         # Boost for synonyms of "create"
         if contains_create:
             weighted_similarity += 0.4  # Increase the boost for "create"
-
+        
         return weighted_similarity
 
     def apply_penalty(self, similarity, contains_get, contains_create, phrase, query):
