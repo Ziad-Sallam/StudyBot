@@ -21,7 +21,7 @@ class QueryHandler:
             "notification": 1.2,  # Boost for "notification"
         }
         # Hardcoded synonymous verbs for "get" and "create"
-        self.get_synonyms = ["get", "retrieve", "fetch", "obtain", "acquire", "see", "view"]        
+        self.get_synonyms = ["get", "retrieve", "fetch", "obtain", "acquire", "see", "view","show"]        
         self.create_synonyms = ["create", "build", "make", "produce", "construct", "generate", "add", "set", "send"]
 
     def is_synonym(self, token, verb_group):
