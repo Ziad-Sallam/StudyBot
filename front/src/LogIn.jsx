@@ -36,7 +36,9 @@ function LogIn() {
             console.log(response.data);
             const user = response.headers.authorization;
             console.log(user)
-            navigate(`/${email}/${user}`)
+            window.sessionStorage.setItem("token", JSON.stringify(user));
+            window.sessionStorage.setItem("is_admin",JSON.stringify(response.headers.is_admin))
+            navigate(`/${email}`)
 
 
         } catch (error) {

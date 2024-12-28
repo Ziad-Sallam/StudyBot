@@ -76,6 +76,17 @@ body{
 }
 .todo-list{
     flex: 1;
+    max-height: 300px;
+    overflow: auto ;
+
+}
+.todo-list::-webkit-scrollbar{
+    display: none;
+}
+
+.todo-list{
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .user-bubble{
@@ -86,7 +97,6 @@ body{
     background: linear-gradient(to right, #1E5A74, #237885);
     background-blend-mode: color-burn;
 
-
 }
 
 .bot-bubble{
@@ -96,4 +106,6 @@ body{
     max-width: 70%;
     mix-blend-mode: color-burn;
     background: linear-gradient(to right, #181A3D, #0D2B45); ;
+    white-space: pre-line;
+
 }

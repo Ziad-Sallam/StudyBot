@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 
-function AddAssignmentWidget() {
+function AddAssignmentWidget(props) {
 
     const [subjects, setSubjects] = useState([])
     const [sub,setSub] = useState('')
@@ -25,6 +25,7 @@ function AddAssignmentWidget() {
 
             const response = await axios.post("http://127.0.0.1:8000/create-assignment",params)
             console.log(response.data)
+            props.action("")
 
         }catch (error){
             console.log(error)
@@ -47,7 +48,6 @@ function AddAssignmentWidget() {
         getSubjects();
 
     },[])
-
 
     return (
         <div className={"add-assignment-widget-container"}>

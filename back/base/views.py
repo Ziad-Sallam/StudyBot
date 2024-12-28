@@ -15,6 +15,8 @@ from django.contrib.auth.models import User
 from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Notification, Subject, Tasks, UserAssignment, userNotification
 from .SpacyModel import QueryHandler
 from .serializers.SubjectSerializer import SubjectSerializer
+
+
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -117,6 +119,8 @@ def addMaterial(request):
         try:
             subject = request.POST.get('subject')
             file = request.FILES.get('file')
+            print(file)
+            print(subject)
 
             if not subject or not file:
                 return JsonResponse({"error": "Subject and file are required"}, status=400)
@@ -460,4 +464,8 @@ def handleRequest(request : HttpRequest):
         return JsonResponse({
             "response":response
         },safe=False, status=200)
-    
+
+
+
+
+

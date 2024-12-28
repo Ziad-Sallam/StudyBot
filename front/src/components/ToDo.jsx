@@ -10,7 +10,7 @@ ToDo.propTypes ={
 }
 
 
-function ToDo(props){
+function ToDo(){
     const [size,setSize] = useState({ width: window.innerWidth *0.25, height: window.innerHeight });
     addEventListener('resize', ()=>{
         setSize((prevState) => {
@@ -32,19 +32,13 @@ function ToDo(props){
                 console.log(error)
             }
 
-
         }
         getTodo()
-    },[])
-
-
-
-
+    },[todo])
 
     return (
         <div className="row todo-list">
             <div>
-
 
                     {todo.map((item, index) =>
                         <ToDoItem

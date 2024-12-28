@@ -2,7 +2,7 @@ import '../css/addWssignmentWidget.css'
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-function CreateNotification() {
+function CreateNotification(props) {
 
     const [title,setTitle] = useState("");
     const [description, setDescription] = useState('')
@@ -17,6 +17,7 @@ function CreateNotification() {
 
             const response = await axios.post("http://127.0.0.1:8000/create-notification",params)
             console.log(response.data)
+            props.action("")
 
         }catch (error){
             console.log(error)

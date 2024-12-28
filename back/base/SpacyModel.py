@@ -18,7 +18,7 @@ class QueryHandler:
         self.weights = {
             "assignment": 1.2,  # Boost for "assignment"
             "task": 1.2,        # Boost for "task"
-            "notification" : 1.2, # Boost for "notification"
+            "notification": 1.2,  # Boost for "notification"
         }
         # Hardcoded synonymous verbs for "get" and "create"
         self.get_synonyms = ["get", "retrieve", "fetch", "obtain", "acquire", "see", "view"]        

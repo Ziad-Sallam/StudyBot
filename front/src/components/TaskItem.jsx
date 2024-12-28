@@ -19,6 +19,7 @@ function TaskItem(props) {
                 id : props.id,
             }
             const response = await axios.post("http://127.0.0.1:8000/delete-task", params)
+
             console.log(response.data)
         }catch (error){
             console.log(error)
