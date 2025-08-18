@@ -1,128 +1,146 @@
+from datetime import datetime
+import os
 import spacy
+import google.generativeai as genai
+from .models import Subject, AssignmentType
 
-# Load the spacy model: nlp
+api_key = os.getenv('GEMINI_API_KEY')
+
+generation_config = {
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_output_tokens": 4000,
+    "response_mime_type": "text/plain",
+}
+
+
 class QueryHandler:
-    nlp = spacy.load("en_core_web_md")
-
     def __init__(self):
-        self.reference_phrases = {
-            "get assignment": self.nlp("get assignment"),
-            "get task": self.nlp("get task"),
-            "get material": self.nlp("get material"),
-            "create task": self.nlp("create task"),
-            "create assignment": self.nlp("create assignment"),
-            "create notification": self.nlp("create notification"),
-            "create material": self.nlp("create material"),
-        }
-        # Assign weights to specific words to adjust their impact on similarity
-        self.weights = {
-            "assignment": 1.2,  # Boost for "assignment"
-            "task": 1.2,        # Boost for "task"
-            "notification": 1.2,  # Boost for "notification"
-        }
-        # Hardcoded synonymous verbs for "get" and "create"
-        self.get_synonyms = ["get", "retrieve", "fetch", "obtain", "acquire", "see", "view","show"]        
-        self.create_synonyms = ["create", "build", "make", "produce", "construct", "generate", "add", "set", "send"]
+        # configure API once
+        genai.configure(api_key=api_key)
 
-    def is_synonym(self, token, verb_group):
-        """Check if a token is a synonym of a specific verb group using hardcoded values."""
-        if verb_group == "get":
-            return token.lemma_ in self.get_synonyms
-        elif verb_group == "create":
-            return token.lemma_ in self.create_synonyms
-        return False
+        # create the model
+        model = genai.GenerativeModel(
+            model_name="gemini-2.5-flash",
+            generation_config=generation_config,
+        )
 
-    def adjust_similarity(self, query, doc, contains_get, contains_create):
-        """Adjust similarity using predefined weights for specific words."""
-        base_similarity = query.similarity(doc)
-        weighted_similarity = base_similarity
+        # ✅ correct chat history format (no "system")
+        self.chat = model.start_chat(
+            history=[
+                {
+                    "role": "user",
+                    "parts": [{"text": "You are an assistant that classifies queries into actions."}],
+                },
+                {
+                    "role": "user",
+                    "parts": [{"text": "Your name is Trixie."}],
+                },
+            ]
+        )
 
-        for word in query:
-            if word.lemma_ in self.weights:
-                weight = self.weights[word.lemma_]
-                for ref_word in doc:
-                    if word.lemma_ == ref_word.lemma_:
-                        weighted_similarity += (weight - 1) * ref_word.similarity(word)
+    def identify_query(self, query, threshold=0.4):
+        # send the query into the ongoing chat
+        response = self.chat.send_message(f"""
+        The user message is: "{query}".
+        Choose exactly one action from this list:
+        - create assignment : like (sheet, project, lab).
+        - create notification
+        - create material
+        - none
+        Respond ONLY with the action name, nothing else.
+        """)
+        result = response.text.strip()
+        if result == "none":
+            response = self.chat.send_message(f"""
+                        The user message is: "{query}".
+                        respond normally.
+                        """)
+            result = response.text.strip()
+            return result
+       
+        return result
+    
+    def get_task_description(self, query):
+        # send the query into the ongoing chat
+        response = self.chat.send_message(f"""
+        The user message is: "{query}".
+        Respond with a short title of the task.
+        """)
+        result = response.text.strip()
+        print(f"Task description: {result}")
+        return result
+    
+    def get_notification_description(self, query):
+        # send the query into the ongoing chat
+        title = self.chat.send_message(f"""
+        The user message is: "{query}".
+        Respond with a short title of the notification.
+        """)
+        title = title.text.strip()
+        description = self.chat.send_message(f"""The user message is: "{query}".
+        Respond with a short description of the notification.
+        """)
+        description = description.text.strip()
+        result = f"{title} - {description}"
+        print(f"Notification description: {result}")
+        return title, description
 
-        # Boost for synonyms of "get"
-        if contains_get:
-            weighted_similarity += 0.4  # Increase the boost for "get"
-        # Boost for synonyms of "create"
-        if contains_create:
-            weighted_similarity += 0.4  # Increase the boost for "create"
+    def get_assignment_description(self, query):
+        subjects = Subject.objects.all()
+        subject_names = [subject.name for subject in subjects]
+        subject_names_str = ", ".join(subject_names)
+        # send the query into the ongoing chat
+        print(f"Subjects: {subject_names_str}")
+        subject = self.chat.send_message(f"""The user message is: "{query}".
+                                            Respond with the subject of the assignment from this list: {subject_names_str}.
+                                            """)
+        subject = subject.text.strip()
+        print(f"Subject: {subject}")
+        deadline = self.chat.send_message(f"""
+        The user message is: "{query}".
 
-        return weighted_similarity
+        Your task:
+        - Identify if the user mentioned a deadline (e.g., "tomorrow", "next week", "August 20 at 5pm").
+        - Convert it into an absolute datetime in the format: YYYY-MM-DD HH:MM:SS
+        - Use the current date/time as reference: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        - If no deadline is mentioned, respond ONLY with: no deadline
+        - Output must contain ONLY the datetime or "no deadline" — no extra words.
+        """)
 
-    def apply_penalty(self, similarity, contains_get, contains_create, phrase, query):
-        """Apply penalties for mismatches and conflicting keywords."""
-        # Penalty for mismatched 'get' vs 'create'
-        if contains_get and "create" in phrase:
-            similarity -= 0.4  # Penalty for mismatched 'get' vs 'create'
-        elif contains_create and "get" in phrase:
-            similarity -= 0.4  # Penalty for mismatched 'create' vs 'get'
+        deadline = deadline.text.strip()
 
-        # Penalty if query contains 'task(s)' but reference phrase contains 'assignment(s)'
-        query_lemmas = [token.lemma_ for token in query]
-        if "task" in query_lemmas and ("assignment" in phrase or "notification" in phrase):
-            # print(f"Task(s) in query, assignment(s) in phrase: {similarity:.4f}")
-            similarity -= 0.4
-        elif "assignment" in query_lemmas and ("task" in phrase or "notification" in phrase):
-            # print(f"Assignment(s) in query, task(s) in phrase: {similarity:.4f}")
-            similarity -= 0.4
-        elif "notification" in query_lemmas and ("task" in phrase or "assignment" in phrase):
-            similarity -= 0.4
-
-        return similarity
-
-    def identify_query(self, query, threshold=0.5):
-        query_doc = self.nlp(query.lower())
-        most_similar = "none"
-        max_similarity = 0
-
-        # Determine if the query contains hardcoded synonyms for "get" or "create"
-        contains_get = any(self.is_synonym(token, "get") for token in query_doc)
-        contains_create = any(self.is_synonym(token, "create") for token in query_doc)
-
-        # Check if the query contains "material"
-        contains_material = any(token.lemma_ == "material" for token in query_doc)
-
-        # Special condition: "create" and "material"
-        # if contains_create and contains_material:
-        #     return "This command can't be used here"
-
-        # Debugging: print similarities for each reference phrase
-        for phrases, doc in self.reference_phrases.items():
-            if phrases == "get material" and not contains_material:
-                similarity = 0  # Set similarity to 0 if the query does not contain "material"
-            else:
-                similarity = self.adjust_similarity(query_doc, doc, contains_get, contains_create)
-                similarity = self.apply_penalty(similarity, contains_get, contains_create, phrases, query_doc)
-
-            # Boost similarity for hardcoded synonyms of "get" or "create"
-            if contains_get and "get" in phrases:
-                similarity += 0.3
-            elif contains_create and "create" in phrases:
-                similarity += 0.3
-
-            # Print similarity for debugging
-            print(f"Similarity between '{query_doc.text}' and '{phrases}': {similarity:.4f}")
-
-            if similarity > max_similarity:
-                most_similar = phrases
-                max_similarity = similarity
-
-        # Threshold check
-        return most_similar if max_similarity > threshold else "I am sorry I didn't get that. Can you please rephrase?"
+        description = self.chat.send_message(f"""The user message is: "{query}".
+                                            Respond with a short description of the assignment.
+                                            """)
+        description = description.text.strip()
+        assignment_type = self.chat.send_message(f"""The user message is: "{query}".
+                                            Respond with the type of the assignment from this list: {', '.join([at.type for at in AssignmentType.objects.all()])}.
+                                            """)
+        assignment_type = assignment_type.text.strip()
 
 
+        result = f"{subject} - {deadline} - {description} - {assignment_type}"
+        print(f"Assignment description: {result}")
+        return subject, deadline, description, assignment_type
+    
+    def coustom_query(self, query):
+        # send the query into the ongoing chat
+        response = self.chat.send_message(f"""
+        The user message is: "{query}".
+        Respond normally.
+        """)
+        result = response.text.strip()
+        return result
+                                          
+       
 
 
 if __name__ == "__main__":
-    # Get user input
     input_text = input("Enter your query: ")
 
-    # Create a QueryHandler instance and identify the most similar phrase
     query_handler = QueryHandler()
     result = query_handler.identify_query(input_text)
 
-    print(f"The input '{input_text}' is most similar to: {result}")
+    print(f"{result}")

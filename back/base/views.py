@@ -15,6 +15,9 @@ from django.contrib.auth.models import User
 from base.models import Assignment, AssignmentStatus, AssignmentType, Materials, Notification, Subject, Tasks, UserAssignment, userNotification
 from .SpacyModel import QueryHandler
 from .serializers.SubjectSerializer import SubjectSerializer
+import google.generativeai as genai
+
+
 
 
 class LoginView(APIView):
@@ -43,35 +46,21 @@ class LoginView(APIView):
             }, status=200)   
         
         return Response({'error': 'Invalid credentials'}, status=400)
-@csrf_exempt
-def createAssignment(request: HttpRequest):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        deadline = data.get('deadline')
-        subject = data.get('subject')
-        assignment_type = data.get('type')
-        description = data.get('description')
-        print(description)
-        subjectObject = Subject.objects.get(name=subject)
-        assignmentTypeObject = AssignmentType.objects.get(type=assignment_type)
-        pendingStatus = AssignmentStatus.objects.get(id=2)  # Assuming id 2 is for "Pending" status
+    
 
-        auth = JWTAuthentication()
-        try:
-            user, _ = auth.authenticate(request)
-            if user.is_superuser:
-                assignment = Assignment.objects.create(subject=subjectObject, type=assignmentTypeObject, deadline=deadline, description=description)
+def createAssignment(subject, assignment_type, deadline, description):
+    
+    subjectObject = Subject.objects.get(name=subject)
+    assignmentTypeObject = AssignmentType.objects.get(type=assignment_type)
+    pendingStatus = AssignmentStatus.objects.get(id=2)  # Assuming id 2 is for "Pending" status
 
-                # Create a UserAssignment for each user with the new assignment and pending status
-                users = User.objects.all()
-                for user in users:
-                    UserAssignment.objects.create(user=user, assignment=assignment, status=pendingStatus)
+    assignment = Assignment.objects.create(subject=subjectObject, type=assignmentTypeObject, deadline=deadline, description=description)
+    # Create a UserAssignment for each user with the new assignment and pending status
+    users = User.objects.all()
+    for user in users:
+        UserAssignment.objects.create(user=user, assignment=assignment, status=pendingStatus)
 
-                return HttpResponse("Assignment created successfully", status=201)
-            else:
-                return HttpResponse("You are not authorized to create assignments", status=403)
-        except AuthenticationFailed:
-            return HttpResponse("Authentication failed", status=401)
+            
 @csrf_exempt
 def getMaterial(request):
     if request.method == 'POST':
@@ -451,15 +440,45 @@ def handleRequest(request : HttpRequest):
     query = data.get('query')
     handler = QueryHandler()
     response = handler.identify_query(query)
+    print(response)
     if response == "create assignment" or response == "create notification" or response == "create material":
         if not user.is_superuser:
             return JsonResponse({
                  "response":"You are not authorized to do this action"}, status=403)
         else:
+            if response == "create assignment":
+                subject, deadline, description, type_id = handler.get_assignment_description(query)
+                createAssignment(subject, type_id, deadline, description)
+                return JsonResponse({
+                    "response": f"Assignment '{description}' created successfully"
+                }, safe=False, status=200)
+            
+            elif response == "create notification":
+                title, description = handler.get_notification_description(query)
+                notification = Notification.objects.create(title=title, description=description)
+                users = User.objects.all()
+                for user in users:
+                    userNotification.objects.create(user=user, notification=notification, seen=False)
+                return JsonResponse({
+                    "response": f"Notification '{title}' created successfully with description '{description}'"
+                }, safe=False, status=200)
+            
+
             return JsonResponse({
-                "response":response
-            }
-            , status=200)
+                "response": f"{response} created successfully"
+            }, safe=False, status=200)
+    
+    if response == "create task":
+        description = handler.get_task_description(query)
+        task = Tasks.objects.create(description=description, user=user, flag=False)
+        return JsonResponse({
+            "response": f"Task created successfully with description: {description}"
+        }, safe=False, status=200)
+    
+    if response not in ["create assignment", "create notification", "create material", "create task", "get assignment", "get tasks", "get assignments", "get subjects", "get notifications"]:
+        return JsonResponse({
+            "response": response
+        }, safe=False, status=200)
     else:
         return JsonResponse({
             "response":response

@@ -17,7 +17,6 @@ function ChatBox() {
 
         function formatDate(dateString) { // Create a new Date object from the input string
             const date = new Date(dateString); // Extract the date parts
-            console.log("hello")
 
             const year = date.getUTCFullYear();
             const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -37,15 +36,13 @@ function ChatBox() {
                     { query: mymessage },
                 );
 
-                console.log(response.data);
+                
                 // Add bot's response to the screen
                 const botReply = response.data.response || 'No response from bot';
-                if (botReply === "create task"){
-                    setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "what is the description of this task ?" }]);
-                    setAction("create task")
-
-                }
-                else if(botReply === "create assignment"){
+                console.log("Response from backend:", response.data);
+                    
+                    console.log(response.data);
+                if(botReply === "create assignment"){
                     setAction("create assignment")
 
                 } else if(botReply === "create notification"){
@@ -56,7 +53,6 @@ function ChatBox() {
                 } else if(botReply === 'get assignment'){
                     const response = await axios.post("http://127.0.0.1:8000/get-assignments")
                     const assignments = response.data.assignments
-                    console.log(assignments)
                     const notDone = assignments.filter((i) => i.status ==="Pending")
                     if(notDone.length ===0){
                         setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "Well done! You've successfully completed all your assignments. Keep up the great work! 🌟📚" }]);
@@ -72,7 +68,7 @@ function ChatBox() {
                 } else if(botReply === 'get task'){
                     const tasksResponse = await axios.get("http://127.0.0.1:8000/get-tasks");
                     const tasks = tasksResponse.data.tasks
-                    console.log(tasks)
+                    
                     if(tasks.length ===0){
                         setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "Well done! You've successfully completed all your assignments. Keep up the great work! 🌟📚" }]);
                         return
@@ -84,9 +80,10 @@ function ChatBox() {
                     setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: f }]);
                 }
                 else{
-                    const response = await axios.post('http://127.0.0.1:5000',{message:mymessage})
-                    setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: response.data }]);
+
+                    setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botReply }]);
                     setAction("")
+                    
                 }
 
             } else if(action === "create task"){
@@ -94,7 +91,7 @@ function ChatBox() {
                     description: mymessage,
                 }
                 const response = axios.post("http://127.0.0.1:8000/create-task", params)
-                console.log(response.data);
+                
                 setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: "task created successfully! ☺️" }]);
                 setAction("")
             }
