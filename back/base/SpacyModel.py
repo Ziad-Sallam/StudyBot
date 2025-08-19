@@ -1,6 +1,5 @@
 from datetime import datetime
 import os
-import spacy
 import google.generativeai as genai
 from .models import Subject, AssignmentType
 

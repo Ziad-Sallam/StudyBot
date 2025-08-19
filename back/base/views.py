@@ -165,21 +165,7 @@ def getMaterialData(request: HttpRequest):
         except Exception as e:
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
-@csrf_exempt
-def createTask(request : HttpRequest):
-    if request.method == 'POST':
-        try:
-            jwt = JWTAuthentication()
-            data = json.loads(request.body)
-            description = data.get('description')
-            user = jwt.authenticate(request)
-            if user is None:
-                return HttpResponse("Authentication failed", status=401)
-            user = user[0]
-            task = Tasks.objects.create(description=description, user=user, flag=False)
-            return HttpResponse(task, status=201)
-        except:
-            return HttpResponse("Error", status=400)
+
 @csrf_exempt
 def getTasks(request : HttpRequest):
     jwt = JWTAuthentication()
@@ -227,6 +213,7 @@ def getAssignments(request : HttpRequest):
         return JsonResponse(response_data)
     else :
         return HttpResponse("Method not allowed", status=405)
+    
 @csrf_exempt
 def deleteTask(request : HttpRequest):
     if request.method == 'POST':
@@ -247,6 +234,7 @@ def deleteTask(request : HttpRequest):
             return HttpResponse("Error", status=400)
     else:
         return HttpResponse("Method not allowed", status=405)
+    
 @csrf_exempt
 def completeTask(request : HttpRequest):
     if request.method == 'POST':
@@ -267,6 +255,7 @@ def completeTask(request : HttpRequest):
             return HttpResponse("Error", status=400)
     else:
         return HttpResponse("Method not allowed", status=405)
+    
 @csrf_exempt
 def completeAssignment(request: HttpRequest):
     if request.method == "POST":
@@ -381,23 +370,7 @@ def getNotifications(request : HttpRequest):
         })
     else:
         return HttpResponse("Method not allowed", status=405)
-@csrf_exempt
-def createNotification(request: HttpRequest):
-    if request.method == 'POST':
-        try:
-            user , _ = JWTAuthentication().authenticate(request)
-            if not user.is_superuser:
-                return HttpResponse("You are not authorized to create notifications", status=403)
-            data = json.loads(request.body)
-            title = data.get('title')
-            description = data.get('description')
-            notification = Notification.objects.create(title=title, description=description)
-            users = User.objects.all()
-            for user in users:
-                userNotification.objects.create(user=user, notification=notification, seen=False)
-            return HttpResponse("Notification created", status=201)
-        except:
-            return HttpResponse("Error", status=400)
+
 @csrf_exempt
 def setNotificationAsSeen(request: HttpRequest):
     if request.method == "POST":
@@ -429,6 +402,7 @@ def setNotificationAsSeen(request: HttpRequest):
                 continue
 
         return HttpResponse("Notifications deleted successfully", status=200)
+    
 @csrf_exempt
 def handleRequest(request : HttpRequest):
     # Manually authenticate using JWT
@@ -465,7 +439,7 @@ def handleRequest(request : HttpRequest):
             
 
             return JsonResponse({
-                "response": f"{response} created successfully"
+                "response": f"{response}"
             }, safe=False, status=200)
     
     if response == "create task":
