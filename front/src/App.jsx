@@ -27,11 +27,7 @@ function App() {
     useEffect(() => {
         const fetchData = async () => {
             const x = jwtDecode(token);
-            console.log("AAASDASD")
-            console.log(x);
-            console.log(typeof is_admin)
-
-
+            
             try {
                 const tasksResponse = await axios.get("http://127.0.0.1:8000/get-tasks");
                 setTasks(tasksResponse.data.tasks);
@@ -41,6 +37,8 @@ function App() {
         };
 
         fetchData();
+        const interval = setInterval(fetchData, 3000);
+        return () => clearInterval(interval);
     }, [tasks]);
 
     return (

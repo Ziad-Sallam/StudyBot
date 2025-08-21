@@ -7,6 +7,7 @@ urlpatterns= [
     path('create-assignment',createAssignment,name="create-assignment"),
     path('get-materials',getMaterial,name="get-material"),
     path('add-material',addMaterial,name="add-material"),
+    path('create-task',createTask,name="create-task"),
     path('get-tasks',getTasks,name="get-tasks"),
     path('get-assignments',getAssignments,name="get-assignments"),
     path('delete-task',deleteTask,name="delete-task"),

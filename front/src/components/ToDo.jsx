@@ -34,6 +34,8 @@ function ToDo(){
 
         }
         getTodo()
+        const interval = setInterval(getTodo, 3000);
+        return () => clearInterval(interval);
     },[todo])
 
     return (

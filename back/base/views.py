@@ -166,6 +166,23 @@ def getMaterialData(request: HttpRequest):
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+
+@csrf_exempt
+def createTask(request : HttpRequest):
+    if request.method == 'POST':
+        try:
+            jwt = JWTAuthentication()
+            data = json.loads(request.body)
+            description = data.get('description')
+            user = jwt.authenticate(request)
+            if user is None:
+                return HttpResponse("Authentication failed", status=401)
+            user = user[0]
+            task = Tasks.objects.create(description=description, user=user, flag=False)
+            return HttpResponse(task, status=201)
+        except:
+            return HttpResponse("Error", status=400)
+
 @csrf_exempt
 def getTasks(request : HttpRequest):
     jwt = JWTAuthentication()
